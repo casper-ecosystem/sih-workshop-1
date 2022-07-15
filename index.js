@@ -7,7 +7,7 @@ const contract = new Contracts.Contract(client)
 const keyPairFilePath = "keys/secret_key.pem"
 const keys = getKeys()
 const network = "casper-test"
-const contractHash = ""
+const contractHash = "hash-1731496f4b2cfa15c8984e4c78cfb52992711396ce1dd41bde62cb893e3d49d7"
 
 var collection_name = "SIH Workshop NFT Test"
 var collection_symbol = "SIH"
@@ -35,7 +35,7 @@ async function installContract() {
     "collection_name": CLValueBuilder.string(collection_name),
     "collection_symbol": CLValueBuilder.string(collection_symbol),
     "total_token_supply": CLValueBuilder.u64(11),
-    "ownership_mode": CLValueBuilder.u8(1),
+    "ownership_mode": CLValueBuilder.u8(2),
     "nft_kind": CLValueBuilder.u8(1),
     "holder_mode": CLValueBuilder.option(zero),
     "nft_metadata_kind": CLValueBuilder.u8(3),
@@ -123,13 +123,46 @@ async function transfer() {
   contract.setContractHash(contractHash)
 
   const args = RuntimeArgs.fromMap({
-    "token_id": CLValueBuilder.u64(0),
-    "target_key": CLPublicKey.fromHex("0177a214d1c6ebdcf9f5f5e977236f3f904613eb9dcd76da61aaa64beec4c349c5"),
+    "token_id": CLValueBuilder.u64(1),
+    "target_key": CLPublicKey.fromHex("014a9c58f89bc6384cb25aae9278822960848c132e3bb68dec21853a6da79d5fdd"),
     "source_key": keys.publicKey
   })
 
   const deploy = contract.callEntrypoint(
     "transfer",
+    args,
+    keys.publicKey,
+    network,
+    "1000000000", // 1 CSPR
+    [keys]
+  )
+
+  var deployHash
+  try {
+    deployHash = await client.putDeploy(deploy)
+  } catch(error) {
+    console.log(error)
+  }
+
+  var result
+  try {
+    result = await pollDeployment(deployHash)
+  } catch(error) {
+    console.error(error)
+  }
+
+  console.log("Result: " + result)
+}
+
+async function ownerOf() {
+  contract.setContractHash(contractHash)
+
+  const args = RuntimeArgs.fromMap({
+    "token_id": CLValueBuilder.u64(0),
+  })
+
+  const deploy = contract.callEntrypoint(
+    "owner_of",
     args,
     keys.publicKey,
     network,
@@ -200,6 +233,7 @@ function iterateTransforms(result) {
   }
 }
 
-installContract()
+//installContract()
 //mint()
 //transfer()
+//ownerOf()
