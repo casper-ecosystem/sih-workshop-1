@@ -7,7 +7,7 @@ const contract = new Contracts.Contract(client)
 const keyPairFilePath = "keys/secret_key.pem"
 const keys = getKeys()
 const network = "casper-test"
-const contractHash = "hash-1731496f4b2cfa15c8984e4c78cfb52992711396ce1dd41bde62cb893e3d49d7"
+const contractHash = ""
 
 var collection_name = "SIH Workshop NFT Test"
 var collection_symbol = "SIH"
@@ -34,7 +34,7 @@ async function installContract() {
   const args = RuntimeArgs.fromMap({
     "collection_name": CLValueBuilder.string(collection_name),
     "collection_symbol": CLValueBuilder.string(collection_symbol),
-    "total_token_supply": CLValueBuilder.u64(11),
+    "total_token_supply": CLValueBuilder.u64(1000),
     "ownership_mode": CLValueBuilder.u8(2),
     "nft_kind": CLValueBuilder.u8(1),
     "holder_mode": CLValueBuilder.option(zero),
@@ -47,7 +47,7 @@ async function installContract() {
   const deploy = contract.install(
     getWasm("cep-78-enhanced-nft/contract/target/wasm32-unknown-unknown/release/contract.wasm"),
     args,
-    "200000000000", //200 CSPR
+    "180000000000", //180 CSPR
     keys.publicKey,
     network,
     [keys]
@@ -70,9 +70,6 @@ async function installContract() {
 
   console.log("Contract hash: " + contractHash)
 }
-
-
-
 
 
 async function mint() {
@@ -113,82 +110,6 @@ async function mint() {
 
   console.log("Result: " + result)
 }
-
-
-
-
-
-
-async function transfer() {
-  contract.setContractHash(contractHash)
-
-  const args = RuntimeArgs.fromMap({
-    "token_id": CLValueBuilder.u64(1),
-    "target_key": CLPublicKey.fromHex("014a9c58f89bc6384cb25aae9278822960848c132e3bb68dec21853a6da79d5fdd"),
-    "source_key": keys.publicKey
-  })
-
-  const deploy = contract.callEntrypoint(
-    "transfer",
-    args,
-    keys.publicKey,
-    network,
-    "1000000000", // 1 CSPR
-    [keys]
-  )
-
-  var deployHash
-  try {
-    deployHash = await client.putDeploy(deploy)
-  } catch(error) {
-    console.log(error)
-  }
-
-  var result
-  try {
-    result = await pollDeployment(deployHash)
-  } catch(error) {
-    console.error(error)
-  }
-
-  console.log("Result: " + result)
-}
-
-async function ownerOf() {
-  contract.setContractHash(contractHash)
-
-  const args = RuntimeArgs.fromMap({
-    "token_id": CLValueBuilder.u64(0),
-  })
-
-  const deploy = contract.callEntrypoint(
-    "owner_of",
-    args,
-    keys.publicKey,
-    network,
-    "1000000000", // 1 CSPR
-    [keys]
-  )
-
-  var deployHash
-  try {
-    deployHash = await client.putDeploy(deploy)
-  } catch(error) {
-    console.log(error)
-  }
-
-  var result
-  try {
-    result = await pollDeployment(deployHash)
-  } catch(error) {
-    console.error(error)
-  }
-
-  console.log("Result: " + result)
-}
-
-
-
 
 function getKeys() {
   return Keys.Ed25519.loadKeyPairFromPrivateFile(keyPairFilePath)
@@ -235,5 +156,3 @@ function iterateTransforms(result) {
 
 //installContract()
 //mint()
-//transfer()
-//ownerOf()
