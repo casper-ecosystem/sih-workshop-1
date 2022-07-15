@@ -7,7 +7,7 @@ Learn how to do so [here](https://docs.casperlabs.io/workflow/setup/)
 
 ## Install
 
-```javascript
+```bash
 git clone https://github.com/casper-ecosystem/sih-workshop-1.git
 cd sih-workshop-1
 casper-client keygen keys/
