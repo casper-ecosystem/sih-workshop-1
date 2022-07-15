@@ -13,3 +13,10 @@ cd sih-workshop-1
 casper-client keygen keys/
 npm install
 ```
+
+## Fund Account
+Download and Open the [Casper Signer](https://chrome.google.com/webstore/detail/casper-signer/djhndpllfiibmcdbnmaaahkhchcoijce)
+[Create a vault](https://docs.casperlabs.io/workflow/signer-guide/#12-logging-in-to-the-casper-signer) if you haven't already
+Click **IMPORT ACCOUNT** and select the *secret_key.pem* file in *sih-workshop-1/keys/*
+Go to the [CSPR testnet faucet](https://testnet.cspr.live/tools/faucet), complete the captcha, and obtain test CSPR
+
