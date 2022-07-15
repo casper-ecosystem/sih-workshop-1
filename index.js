@@ -24,8 +24,8 @@ async function installContract() {
         "required": true
       },
       "last_name": {
-        "name": "Last Name"
-        "description": "Token holder's last name"
+        "name": "Last Name",
+        "description": "Token holder's last name",
         "required": true
       }
     }
